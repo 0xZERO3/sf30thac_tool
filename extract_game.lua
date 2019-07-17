@@ -3,6 +3,7 @@ local SWAP_ON          = 1
 local EXTRACT_NORMAL   = 0
 local EXTRACT_GFX_CPS1 = 1
 local EXTRACT_GFX_CPS2 = 2
+local EXTRACT_XOR      = 3
 
 local G_buf = {}
 local G_conf     = {}
