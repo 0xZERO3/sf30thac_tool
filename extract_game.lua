@@ -1,53 +1,58 @@
-local SWAP_OFF         = 0
-local SWAP_ON          = 1
-local EXTRACT_NORMAL   = 0
-local EXTRACT_GFX_CPS1 = 1
-local EXTRACT_GFX_CPS2 = 2
-local EXTRACT_XOR      = 3
+local SWAP_OFF          = 0
+local SWAP_ON           = 1
+local EXTRACT_NORMAL    = 0
+local EXTRACT_GFX_CPS1  = 1
+local EXTRACT_GFX_CPS2  = 2
+local EXTRACT_XOR       = 3
+local EXTRACT_ODD       = 4
+local EXTRACT_EVEN      = 5
+local EXTRACT_GFX_ACAC0 = 6
+local EXTRACT_GFX_ACAC1 = 7
+
 
 local G_buf = {}
 local G_conf     = {}
 
-local G_empty    = "-empty"
+local G_alt      = "-alt"
 local G_gfxpatch = "-gfxpatch"
 local G_debug    = "-debug"
 
 local G_ext_list = {
 	sf2hf = {
 		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.z80",				dir = "sf2hf",	tar = "s92_09.11a",	start = 0x00000000,	size = 0x00010000,	swap = SWAP_OFF	,	ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.z80",				dir = "sf2hf",	tar = "s92_09.12a",	start = 0x00000000,	size = 0x00010000,	swap = SWAP_OFF	,	ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.68k",				dir = "sf2hf",	tar = "s2tj_23.8f",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.68k",				dir = "sf2hf",	tar = "s2tj_22.7f",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.68k",				dir = "sf2hf",	tar = "s2tj_21.6f",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.68k",				dir = "sf2hf",	tar = "s2tu_23.8f",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.68k",				dir = "sf2hf",	tar = "s2tu_22.7f",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.68k",				dir = "sf2hf",	tar = "s2tu_21.6f",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.z80",				dir = "sf2hfj",	tar = "s92_09.12a",	start = 0x00000000,	size = 0x00010000,	swap = SWAP_OFF	,	ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.68k",				dir = "sf2hfj",	tar = "s2tj_23.8f",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.68k",				dir = "sf2hfj",	tar = "s2tj_22.7f",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.68k",				dir = "sf2hfj",	tar = "s2tj_21.6f",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.68k",				dir = "sf2hfu",	tar = "s2tu_23.8f",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.68k",				dir = "sf2hfu",	tar = "s2tu_22.7f",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.68k",				dir = "sf2hfu",	tar = "s2tu_21.6f",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_01.3a",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_02.4a",	start = 0x00000002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_03.5a",	start = 0x00000004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_04.6a",	start = 0x00000006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_05.7a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_06.8a",	start = 0x00200002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_07.9a",	start = 0x00200004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s92_08.10a",	start = 0x00200006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s2t_10.3c",	start = 0x00400000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s2t_11.4c",	start = 0x00400002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s2t_12.5c",	start = 0x00400004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hfj",	tar = "s2t_13.6c",	start = 0x00400006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-1m.3a",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-3m.5a",	start = 0x00000002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-2m.4a",	start = 0x00000004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-4m.6a",	start = 0x00000006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-5m.7a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-7m.9a",	start = 0x00200002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-6m.8a",	start = 0x00200004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-8m.10a",	start = 0x00200006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-10m.3c",	start = 0x00400000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-12m.5c",	start = 0x00400002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-11m.4c",	start = 0x00400004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
+		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hfu",	tar = "s92-13m.6c",	start = 0x00400006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
 		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.oki",				dir = "sf2hf",	tar = "s92_18.11c",	start = 0x00000000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
 		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.oki",				dir = "sf2hf",	tar = "s92_19.12c",	start = 0x00020000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_01.3a",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_02.4a",	start = 0x00000002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_03.5a",	start = 0x00000004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_04.6a",	start = 0x00000006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_05.7a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_06.8a",	start = 0x00200002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_07.9a",	start = 0x00200004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s92_08.10a",	start = 0x00200006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s2t_10.3c",	start = 0x00400000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s2t_11.4c",	start = 0x00400002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s2t_12.5c",	start = 0x00400004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.j.p16.p32.vrom",	dir = "sf2hf",	tar = "s2t_13.6c",	start = 0x00400006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-1m.3a",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-3m.5a",	start = 0x00000002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-2m.4a",	start = 0x00000004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-4m.6a",	start = 0x00000006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-5m.7a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-7m.9a",	start = 0x00200002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-6m.8a",	start = 0x00200004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-8m.10a",	start = 0x00200006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-10m.3c",	start = 0x00400000,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-12m.5c",	start = 0x00400002,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-11m.4c",	start = 0x00400004,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
-		{src = "bundleStreetFighterII_HF/StreetFighterII_HF.u.vrom",			dir = "sf2hf",	tar = "s92-13m.6c",	start = 0x00400006,	size = 0x00080000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS1},
 		alt_list = {
 			{dir = "sf2hf",		tar = "buf1",			data = {}},
 			{dir = "sf2hf",		tar = "ioa1",			data = {}},
@@ -103,75 +108,64 @@ local G_ext_list = {
 		},
 	},
 	ssf2t = {
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.z80",		dir = "ssf2t",	tar = "sfx.01",		start = 0x00000000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.z80",		dir = "ssf2t",	tar = "sfx.02",		start = 0x00020000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfxj.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfxj.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfxj.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfxj.06a",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfxj.07",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfxj.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2t",	tar = "sfx.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxjx.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxjx.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxjx.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxjx.06a",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxjx.07",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxjx.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2t",	tar = "sfxx.09",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfxj.03d",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
---[[
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfxj.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfxj.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-]]
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfxj.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfxj.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
---[[
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfxj.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2t",	tar = "sfx.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-]]
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxjx.03d",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
---[[
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxjx.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxjx.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-]]
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxjx.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxjx.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
---[[
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxjx.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2t",	tar = "sfxx.09",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-]]
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfxu.03e",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfxu.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfxu.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfxu.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfxu.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfxu.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
---[[
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2t",	tar = "sfx.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-]]
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxux.03e",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxux.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxux.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxux.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxux.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxux.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
---[[
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2t",	tar = "sfxx.09",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
-]]		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.qs",		dir = "ssf2t",	tar = "sfx.11m",	start = 0x00000000,	size = 0x00200000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.qs",		dir = "ssf2t",	tar = "sfx.12m",	start = 0x00200000,	size = 0x00200000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.13m",	start = 0x00000000,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.15m",	start = 0x00000002,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.17m",	start = 0x00000004,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.19m",	start = 0x00000006,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.14m",	start = 0x00800000,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.16m",	start = 0x00800002,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.18m",	start = 0x00800004,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.20m",	start = 0x00800006,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.21m",	start = 0x00C00000,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.23m",	start = 0x00C00002,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.25m",	start = 0x00C00004,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
-		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",	tar = "sfx.27m",	start = 0x00C00006,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.z80",		dir = "ssf2t",		tar = "sfx.01",		start = 0x00000000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.z80",		dir = "ssf2t",		tar = "sfx.02",		start = 0x00020000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfxj.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfxj.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfxj.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfxj.06a",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfxj.07",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfxj.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68k",	dir = "ssf2xjr1",	tar = "sfx.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxjx.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxjx.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxjx.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxjx.06a",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxjx.07",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxjx.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.jr1.68y",	dir = "ssf2xjr1",	tar = "sfxx.09",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfxj.03d",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfxj.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfxj.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfxj.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfxj.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfxj.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68k",	dir = "ssf2xj",		tar = "sfx.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxjx.03d",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxjx.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxjx.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxjx.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxjx.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxjx.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.j.68y",	dir = "ssf2xj",		tar = "sfxx.09",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfxu.03e",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfxu.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfxu.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfxu.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfxu.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfxu.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68k",	dir = "ssf2tu",		tar = "sfx.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxux.03e",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxux.04a",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxux.05",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxux.06b",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxux.07a",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxux.08",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.u.68y",	dir = "ssf2tu",		tar = "sfxx.09",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_XOR},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.qs",		dir = "ssf2t",		tar = "sfx.11m",	start = 0x00000000,	size = 0x00200000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.qs",		dir = "ssf2t",		tar = "sfx.12m",	start = 0x00200000,	size = 0x00200000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.13m",	start = 0x00000000,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.15m",	start = 0x00000002,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.17m",	start = 0x00000004,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.19m",	start = 0x00000006,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.14m",	start = 0x00800000,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.16m",	start = 0x00800002,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.18m",	start = 0x00800004,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.20m",	start = 0x00800006,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.21m",	start = 0x00C00000,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.23m",	start = 0x00C00002,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.25m",	start = 0x00C00004,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
+		{src = "bundleSuperStreetFighterIITurbo/SuperStreetFighterIITurbo.vrom",	dir = "ssf2t",		tar = "sfx.27m",	start = 0x00C00006,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
 		alt_list = {
 			{dir = "ssf2t",		tar = "ssf2xj.key",		data = {0x01, 0x00, 0x02, 0x40, 0x00, 0x08, 0x70, 0x43, 0x80, 0x00, 0x00, 0x11, 0xC0, 0xA0, 0xD6, 0x81, 0x03, 0xA9, 0x50, 0xA4}},
 			{dir = "ssf2t",		tar = "ssf2tu.key",		data = {0x01, 0x00, 0x02, 0x40, 0x00, 0x08, 0x70, 0x43, 0x80, 0x00, 0x00, 0x13, 0xF0, 0xA3, 0xB8, 0xC9, 0x02, 0x45, 0x7C, 0xA4}},
@@ -179,40 +173,38 @@ local G_ext_list = {
 		}
 	},
 	sfa3 = {
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.z80",		dir = "sfa3",	tar = "sz3.01",		start = 0x00000000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.z80",		dir = "sfa3",	tar = "sz3.02",		start = 0x00020000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68x",	dir = "sfa3",	tar = "sz3jx.03",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68x",	dir = "sfa3",	tar = "sz3jx.04",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3j.03",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3j.04",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3.05",		start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3.06",		start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3.07",		start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3.08",		start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfa3",	tar = "sz3.10",		start = 0x00380000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68x",	dir = "sfa3",	tar = "sz3jx.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68x",	dir = "sfa3",	tar = "sz3jx.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3j.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3j.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3.05c",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3.06c",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3.07c",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3.08c",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3.09c",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfa3",	tar = "sz3.10b",	start = 0x00380000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68x",	dir = "sfa3",	tar = "sz3ux.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68x",	dir = "sfa3",	tar = "sz3ux.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3u.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3u.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
---[[
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3.05c",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3.06c",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3.07c",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3.08c",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3.09c",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3",	tar = "sz3.10b",	start = 0x00380000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
-]]
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.z80",		dir = "sfa3",		tar = "sz3.01",		start = 0x00000000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.z80",		dir = "sfa3",		tar = "sz3.02",		start = 0x00020000,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68x",	dir = "sfz3jr2",	tar = "sz3jx.03",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68x",	dir = "sfz3jr2",	tar = "sz3jx.04",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3j.03",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3j.04",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3.05",		start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3.06",		start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3.07",		start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3.08",		start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3.09",		start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.jr2.68k",	dir = "sfz3jr2",	tar = "sz3.10",		start = 0x00380000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68x",	dir = "sfz3j",	tar = "sz3jx.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68x",	dir = "sfz3j",	tar = "sz3jx.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3j.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3j.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3.05c",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3.06c",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3.07c",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3.08c",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3.09c",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.j.68k",	dir = "sfz3j",	tar = "sz3.10b",	start = 0x00380000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68x",	dir = "sfa3u",	tar = "sz3ux.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68x",	dir = "sfa3u",	tar = "sz3ux.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3u.03c",	start = 0x00000000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3u.04c",	start = 0x00080000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3.05c",	start = 0x00100000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3.06c",	start = 0x00180000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3.07c",	start = 0x00200000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3.08c",	start = 0x00280000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3.09c",	start = 0x00300000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
+		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.u.68k",	dir = "sfa3u",	tar = "sz3.10b",	start = 0x00380000,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
 		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.qs",		dir = "sfa3",	tar = "sz3.11m",	start = 0x00000000,	size = 0x00400000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
 		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.qs",		dir = "sfa3",	tar = "sz3.12m",	start = 0x00400000,	size = 0x00400000,	swap = SWAP_ON,		ext = EXTRACT_NORMAL},
 		{src = "bundleStreetFighterAlpha3/StreetFighterAlpha3.vrom",	dir = "sfa3",	tar = "sz3.13m",	start = 0x00000000,	size = 0x00400000,	swap = SWAP_OFF,	ext = EXTRACT_GFX_CPS2},
@@ -272,6 +264,47 @@ local G_ext_list = {
 		{src = "bundleStreetFighterIII_3rdStrike/StreetFighterIII_3rdStrike.s6",	dir = "sfiii3nr1",	tar = "sfiii3-simm6.6",					start = 0x00C00000,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
 		{src = "bundleStreetFighterIII_3rdStrike/StreetFighterIII_3rdStrike.s6",	dir = "sfiii3nr1",	tar = "sfiii3-simm6.7",					start = 0x00E00000,	size = 0x00200000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
 		alt_list = {
+		}
+	},
+--[[
+	nemesis = {
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d01.12a",	start = 0x00000040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},			-- diff
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d05.12c",	start = 0x00000040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},		-- diff
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d02.13a",	start = 0x00010040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d06.13c",	start = 0x00010040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d03.14a",	start = 0x00020040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d07.14c",	start = 0x00020040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d04.15a",	start = 0x00030040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_nemesis.dmp",	dir = "nemesis",	tar = "456-d08.15c",	start = 0x00030040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		alt_list = {
+		}
+	},
+]]
+	vulcan = {
+		{src = "AA_AC_ArcadeClassics_vulcan.dmp",	dir = "gradius2",	tar = "785_x05.6n",		start = 0x00000040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_vulcan.dmp",	dir = "gradius2",	tar = "785_x04.4n",		start = 0x00000040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_vulcan.dmp",	dir = "gradius2",	tar = "785_x09.6r",		start = 0x00020040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_vulcan.dmp",	dir = "gradius2",	tar = "785_x08.4r",		start = 0x00020040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_w05.6n",		start = 0x00040040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_w04.4n",		start = 0x00040040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_w09.6r",		start = 0x00060040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_w08.4r",		start = 0x00060040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_p07.10n",	start = 0x00080040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_p06.8n",		start = 0x00080040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_p13.10s",	start = 0x000A0040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_ODD},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_p12.8s",		start = 0x000A0040,	size = 0x00010000,	swap = SWAP_OFF,	ext = EXTRACT_EVEN},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_g03.10a",	start = 0x000C0040,	size = 0x00008000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},		-- diff
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_f01.5a",		start = 0x000C8040,	size = 0x00020000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "AA_AC_ArcadeClassics_vulcan.dmp",	dir = "gradius2",	tar = "785_g14.d8",		start = 0x000E8040,	size = 0x00004000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785_h14.d8",		start = 0x000EC040,	size = 0x00004000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785f15.p13",		start = 0x000F0040,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_GFX_ACAC0},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785f17.p16",		start = 0x000F0040,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_GFX_ACAC1},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785f16.p15",		start = 0x001F0040,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_GFX_ACAC0},
+		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "785f18.p18",		start = 0x001F0040,	size = 0x00080000,	swap = SWAP_ON,		ext = EXTRACT_GFX_ACAC1},
+--		{src = "AA_AC_ArcadeClassics_gradius2.dmp",	dir = "vulcan",		tar = "unknown01",		start = 0x00270040,	size = 0x00100000,	swap = SWAP_OFF,	ext = EXTRACT_NORMAL},		-- sound?
+		alt_list = {
+			{dir = "vulcan",	tar = "785_g03.10a",	data = {}},
+			{dir = "vulcan",	tar = "785_f02.7c",		data = {}},
 		}
 	}
 }
@@ -392,6 +425,35 @@ function extract_gfx(L)
 	out_fp:close()
 end
 
+function extract_gfx_acac(L)
+	local t = {}
+	local u = {}
+	local offset
+	
+	if (L.ext == EXTRACT_GFX_ACAC0) then
+		offset = 0
+	elseif (L.ext == EXTRACT_GFX_ACAC1) then
+		offset = 2
+	else
+		return
+	end
+	
+	for i = 1, L.size*2 do
+		t[i] = G_buf[L.src][L.start + i]
+	end
+	if L.swap == SWAP_ON then
+		t = byte_swap(t)
+	end
+	
+	for i = 1, (#t)/2, 2 do
+		u[i]   = string.char(t[(i - 1)*2 +1     + offset])
+		u[i+1] = string.char(t[(i - 1)*2 +1 + 1 + offset])
+	end
+	out_fp = io.open(L.dir .. "/" .. L.tar, "w+b")
+	out_fp:write(table.concat(u))
+	out_fp:close()
+end
+
 function extract_xor(L)
 	local t = {}
 	
@@ -412,6 +474,34 @@ function extract_xor(L)
 	end
 	out_fp = io.open(L.dir .. "/" .. L.tar, "w+b")
 	out_fp:write(table.concat(t))
+	out_fp:close()
+end
+
+function extract_odd_even(L)
+	local t = {}
+	local u = {}
+	local odd_even
+	
+	if (L.ext == EXTRACT_ODD) then
+		odd_even = 0
+	elseif (L.ext == EXTRACT_EVEN) then
+		odd_even = 1
+	else
+		return
+	end
+
+	for i = 1, L.size *2 do
+		t[i] = G_buf[L.src][L.start + i]
+	end
+	if L.swap == SWAP_ON then
+		t = byte_swap(t)
+	end
+	
+	for i = 1, L.size do
+		u[i] = string.char(t[(i - 1) * 2 + 1 + odd_even])
+	end
+	out_fp = io.open(L.dir .. "/" .. L.tar, "w+b")
+	out_fp:write(table.concat(u))
 	out_fp:close()
 end
 
@@ -498,6 +588,10 @@ function make_rom(game)
 			extract_gfx(game[i])
 		elseif (game[i].ext == EXTRACT_XOR) then
 			extract_xor(game[i])
+		elseif (game[i].ext == EXTRACT_ODD) or (game[i].ext == EXTRACT_EVEN) then
+			extract_odd_even(game[i])
+		elseif (game[i].ext == EXTRACT_GFX_ACAC0) or (game[i].ext == EXTRACT_GFX_ACAC1) then
+			extract_gfx_acac(game[i])
 		else
 		end
 	end
@@ -510,8 +604,8 @@ function make_alt(game)
 		for j = 1,#game.alt_list[i].data do
 			t[j] = string.char(game.alt_list[i].data[j])
 		end
-		if (#t > 0) or (G_conf.empty == true) then
-			print("Making empty " .. game.alt_list[i].tar .. "...")
+		if (#t > 0) or (G_conf.alt == true) then
+			print("Making alt " .. game.alt_list[i].tar .. "...")
 			out_fp = io.open(game.alt_list[i].dir .. "/" .. game.alt_list[i].tar, "w+b")
 			out_fp:write(table.concat(t))
 			out_fp:close()
@@ -526,10 +620,10 @@ function arg_chek()
 			msg = key .. "|" .. msg
 		end
 		print("usage:extract_game.lua [" .. string.sub(msg, 1 , string.len(msg) - 1) .. "]" ..
-								    " [" .. G_empty .. "]" ..
+								    " [" .. G_alt .. "]" ..
 --								    " [" .. G_gfxpatch .. "]" ..
 								    " [" .. G_debug .. "]")
-		print("  " .. G_empty    .. "     "   .. ":make altanative empty file")
+		print("  " .. G_alt    .. "       "   .. ":make altanative file")
 --		print("  " .. G_gfxpatch .. "  "      .. ":sf30thac graphic patch(ex:guile stage)")
 		print("  " .. G_debug    .. "     "   .. ":debug output")
 		os.exit()
@@ -539,9 +633,9 @@ function arg_chek()
 		os.exit()
 	end
 	for i = 2, #arg do
-		if arg[i] == G_empty then
-			G_conf.empty = true
-			print(G_empty .. " enabled")
+		if arg[i] == G_alt then
+			G_conf.alt = true
+			print(G_alt .. " enabled")
 		-- gfxpatch is not support
 		elseif arg[i] == G_gfxpatch then
 			G_conf.gfxpatch = true
